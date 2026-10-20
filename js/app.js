@@ -123,7 +123,7 @@
   function quizBlock(cfg) {
     // cfg: { mode: 'precheck'|'scenario'|'final', eyebrow, badge, persona, q, options, correct, right, wrong, retake }
     const el = document.createElement("form");
-    el.className = `quiz quiz--${cfg.mode}`;
+    el.className = `quiz quiz--${cfg.mode}${cfg.embedded ? " quiz--embedded" : ""}`;
     el.noValidate = true;
     const name = nid("q");
     const legendId = nid("lg");
@@ -131,7 +131,7 @@
       <div class="quiz__top"><p class="eyebrow">${esc(cfg.eyebrow)}</p>${cfg.badge ? `<span class="pill">${esc(cfg.badge)}</span>` : ""}</div>
       ${cfg.persona ? personaHTML(cfg.persona) : ""}
       <fieldset class="quiz__fs">
-        <legend id="${legendId}" class="quiz__q">${esc(cfg.q)}</legend>
+        <legend id="${legendId}" class="quiz__q" tabindex="-1">${esc(cfg.q)}</legend>
         <div class="quiz__opts">
           ${cfg.options.map((o, i) => `
             <label class="opt" data-i="${i}">
@@ -177,10 +177,15 @@
         ${cfg.mode !== "precheck" ? `<p class="fb__k">Your decision results</p>` : ""}
         <p class="fb__head"><span class="fb__icon">${icon(ok ? "check" : "x", 20)}</span>${esc(head)}</p>
         <p>${esc(ok ? cfg.right : wrongText)}</p>
-        ${ok || cfg.mode === "precheck"
-          ? `<p class="fb__next">${cfg.mode === "precheck" && !ok ? "No problem — you'll learn this in the sections ahead. Keep going ↓" : esc(cfg.nextHint || "Keep going ↓")}</p>`
-          : `<button type="button" class="btn btn--retake">${icon("refresh", 18)} Take again</button>`}`;
+        ${cfg.mode === "precheck" && !ok ? `<p class="fb__next">No problem — you'll learn this in the sections ahead.</p>` : ""}
+        ${cfg.onContinue
+          ? `<button type="button" class="btn btn--primary btn--continue">${esc(cfg.continueLabel || "Continue")}</button>`
+          : ok
+            ? `<p class="fb__next">${esc(cfg.nextHint || "Keep going ↓")}</p>`
+            : `<button type="button" class="btn btn--retake">${icon("refresh", 18)} Take again</button>`}`;
       if (cfg.onResult) cfg.onResult(ok, attempts);
+      const cont = $(".btn--continue", fb);
+      if (cont) cont.addEventListener("click", cfg.onContinue);
       const retake = $(".btn--retake", fb);
       if (retake) retake.addEventListener("click", () => { reset(false); $("input", el).focus(); });
       fb.focus({ preventScroll: true });
@@ -211,12 +216,7 @@
   }
 
   function buildQuizzes() {
-    const pre = $('[data-quiz-group="precheck"]');
-    D.precheck.forEach((q, i) => pre.appendChild(quizBlock({
-      mode: "precheck", eyebrow: `Question ${i + 1} of 4 · ${q.tech}`, badge: "Not graded",
-      q: q.q, options: q.options, correct: q.correct, right: q.right, wrong: q.wrong, answerName: q.tech,
-      onResult: (ok) => { if (!(i in results.precheck)) results.precheck[i] = ok; updateSummary(); }
-    })));
+    buildPrecheck();
 
     const sc = $('[data-quiz-group="scenarios"]');
     D.scenarios.forEach((s, i) => sc.appendChild(quizBlock({
@@ -240,6 +240,68 @@
       if (img.complete && img.naturalWidth === 0) fail();
       img.addEventListener("error", fail);
     });
+  }
+
+
+  /* ---------- Pre-check: one question at a time, then a results screen (mirrors a Rise quiz) ---------- */
+  const CAPTIONS = [
+    [4, "Strong start — you already know the floor", "You could explain all four technologies today. Use this lesson to sharpen how you match each one to a customer's room."],
+    [3, "Solid foundation — you know most of the floor", "You're close. Pay extra attention to the one you missed as you go through the sections ahead."],
+    [2, "Good start — you know some of the basics", "You've got half of it already. The floor preview and deep dive will fill in the rest."],
+    [0, "Starting fresh — that's exactly what this lesson is for", "No prior knowledge needed. We'll walk through each TV step by step, then you'll practice with real customers."]
+  ];
+  function buildPrecheck() {
+    const root = $('[data-quiz-group="precheck"]');
+    const Q = D.precheck, N = Q.length;
+    root.className = "stepper";
+    root.innerHTML = `
+      <div class="stepper__head">
+        <p class="stepper__count" aria-live="polite"></p>
+        <span class="pill">Not graded</span>
+      </div>
+      <div class="stepper__bar" aria-hidden="true">${Q.map(() => "<span></span>").join("")}</div>
+      <div class="stepper__body"></div>`;
+    const body = $(".stepper__body", root), count = $(".stepper__count", root), segs = $$(".stepper__bar span", root);
+    let answers = [];
+    const bringIntoView = () => { if (root.getBoundingClientRect().top < 0) root.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" }); };
+
+    function show(i, focus) {
+      body.innerHTML = "";
+      segs.forEach((sg, k) => { sg.className = k < i ? "is-done" : k === i ? "is-current" : ""; });
+      if (i >= N) return showResults(focus);
+      const q = Q[i];
+      count.textContent = `Question ${i + 1} of ${N}`;
+      body.appendChild(quizBlock({
+        mode: "precheck", embedded: true, eyebrow: q.tech, q: q.q, options: q.options, correct: q.correct,
+        right: q.right, wrong: q.wrong, answerName: q.tech,
+        continueLabel: i === N - 1 ? "See my results →" : "Continue →",
+        onResult: (ok) => { answers[i] = ok; },
+        onContinue: () => { show(i + 1, true); bringIntoView(); }
+      }));
+      if (focus) $(".quiz__q", body).focus({ preventScroll: true });
+    }
+
+    function showResults(focus) {
+      const right = answers.filter(Boolean).length;
+      const [, title, caption] = CAPTIONS.find(([min]) => right >= min);
+      results.precheck = Object.assign({}, answers); updateSummary();
+      count.textContent = "Results";
+      segs.forEach((sg) => (sg.className = "is-done"));
+      body.innerHTML = `
+        <div class="results" tabindex="-1">
+          <div class="results__ring" style="--p:${(right / N) * 100}" aria-hidden="true"><span>${right}/${N}</span></div>
+          <p class="eyebrow">Pre-check complete</p>
+          <h3 class="results__title">You got ${right} out of ${N} right</h3>
+          <p class="results__cap"><strong>${esc(title)}.</strong> ${esc(caption)}</p>
+          <ul class="results__list">${Q.map((q, k) => `<li class="${answers[k] ? "is-ok" : "is-miss"}">${icon(answers[k] ? "check" : "x", 16)}<span>${esc(q.tech)}</span><span class="sr-only">${answers[k] ? "correct" : "missed"}</span></li>`).join("")}</ul>
+          <p class="muted results__note">This was ungraded. Keep scrolling to start the lesson ↓</p>
+          <button type="button" class="btn btn--retake">${icon("refresh", 18)} Take the pre-check again</button>
+        </div>`;
+      $(".btn--retake", body).addEventListener("click", () => { answers = []; show(0, true); });
+      if (focus) $(".results", body).focus({ preventScroll: true });
+    }
+    root._reset = () => { answers = []; show(0, false); };
+    show(0, false);
   }
 
   function updateSummary() {
@@ -300,6 +362,7 @@
   $("#startBtn").addEventListener("click", () => scrollToId("s1"));
   $("#restartBtn").addEventListener("click", () => {
     $$(".quiz").forEach((q) => q._reset());
+    $('[data-quiz-group="precheck"]')._reset();
     results.precheck = {}; results.scenarios = {}; results.final = null; updateSummary();
     $$(".reveal.is-open .reveal__btn").forEach((b) => b.click());
     $$(".acc__btn").forEach((b, i) => { if ((b.getAttribute("aria-expanded") === "true") !== (i === 0)) b.click(); });

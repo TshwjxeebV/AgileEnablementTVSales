@@ -7,7 +7,7 @@ An interactive, scrolling onboarding lesson for new TV sales associates, built i
 ## What's in the lesson
 
 1. **Introduction** — what makes a great TV picture
-2. **Pre-check** — 4 ungraded questions, one per TV, to see where the learner starts
+2. **Pre-check** — 4 ungraded questions, one per TV, shown one at a time with Continue, ending in a results screen (score out of 4 + caption)
 3. **The 5 specs** — accordion: contrast, brightness, viewing angle, refresh rate, burn-in
 4. **Floor preview** — 4 reveal cards: OLED, Mini-LED, QLED, Crystal LED
 5. **Deep dive** — tabs with each technology's profile, bedroom fit and watch-outs
