@@ -321,3 +321,12 @@ button { font: inherit; }
 
 .footer a { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
 .footer a:hover { color: var(--ring); }
+
+/* ===== Quick guide photos ===== */
+.reveal--photo .reveal__face { padding-top: 0; justify-content: flex-start; overflow: hidden; min-height: 0; padding-bottom: 20px; }
+.reveal__photo { margin: 0 -16px 6px; aspect-ratio: 674 / 365; background: linear-gradient(135deg, #17336B, #0B1F3A); }
+.reveal__photo img { width: 100%; height: 100%; object-fit: cover; }
+.reveal__photo.is-fallback img { display: none; }
+.reveal--photo.is-open .reveal__face { border-width: 2px; }
+#guideGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 640px) { #guideGrid { grid-template-columns: 1fr; } }

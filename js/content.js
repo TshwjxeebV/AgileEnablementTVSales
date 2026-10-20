@@ -63,10 +63,10 @@ window.LESSON = {
   ],
 
   guide: [
-    { name: "“Movie before bed”", icon: "chat", sub: "Dark room · eye comfort", detail: "→ OLED. Perfect blacks in the dark and less eye fatigue before sleep." },
-    { name: "“Sunlit living room”", icon: "chat", sub: "Fights heavy glare", detail: "→ Mini-LED. The highest peak brightness overcomes natural light." },
-    { name: "“Leave it on all day”", icon: "chat", sub: "Sports bars · casual living rooms", detail: "→ QLED. Vivid color, great value and immune to burn-in." },
-    { name: "“Just need a cheap screen”", icon: "chat", sub: "Dorms · guest rooms · gyms", detail: "→ Crystal LED. Affordable, reliable and clear for casual viewing." }
+    { name: "“Movie before bed”", icon: "chat", img: "assets/img/guide-1-movie-before-bed.jpg", alt: "A couple in bed watching a dark movie scene on a wall-mounted TV in a dark bedroom at night.", sub: "Dark room · eye comfort", detail: "→ OLED. Perfect blacks in the dark and less eye fatigue before sleep." },
+    { name: "“Sunlit living room”", icon: "chat", img: "assets/img/guide-2-sunlit-living-room.jpg", alt: "A family on a sofa watching TV in a living room flooded with afternoon sunlight from large windows.", sub: "Fights heavy glare", detail: "→ Mini-LED. The highest peak brightness overcomes natural light." },
+    { name: "“Leave it on all day”", icon: "chat", img: "assets/img/guide-3-leave-it-on-all-day.jpg", alt: "Patrons at a neighborhood sports bar watching a baseball game on a TV with a scrolling ticker.", sub: "Sports bars · casual living rooms", detail: "→ QLED. Vivid color, great value and immune to burn-in." },
+    { name: "“Just need a cheap screen”", icon: "chat", img: "assets/img/guide-4-cheap-screen.jpg", alt: "A student in a simple dorm room watching a small TV on a dresser, with string lights on the wall.", sub: "Dorms · guest rooms · gyms", detail: "→ Crystal LED. Affordable, reliable and clear for casual viewing." }
   ],
 
   sale: [

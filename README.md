@@ -52,6 +52,7 @@ The site looks for these files in `assets/img/`. Until they're added, each spot 
 | `sale-1-before-greeting.jpg` | The sale · Before |
 | `sale-2-during-demo.jpg` | The sale · During |
 | `sale-3-after-leaving.jpg` | The sale · After |
+| `guide-1-movie-before-bed.jpg` … `guide-4-cheap-screen.jpg` | Quick scenario guide cards |
 
 Export each image from the **06 · Art Assets** page in the Figma file as PNG or JPG, rename it to match the table, and upload it to `assets/img/` on GitHub (**Add file → Upload files**).
 

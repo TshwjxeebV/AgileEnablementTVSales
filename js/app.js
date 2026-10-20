@@ -54,9 +54,10 @@
     const root = $(rootSel);
     root.innerHTML = items.map((it) => {
       const p = nid("rev");
-      return `<div class="reveal ${compact ? "reveal--compact" : ""}">
+      return `<div class="reveal ${compact ? "reveal--compact" : ""}${it.img ? " reveal--photo" : ""}">
         <div class="reveal__face">
-          ${it.screen && D.visuals[it.name] ? `<figure class="reveal__screen">${screenSVG(it.name)}<figcaption>${esc(window.TVScreens.short(it.name))}</figcaption></figure>` : `<div class="reveal__icon">${icon(it.icon, compact ? 30 : 34)}</div>`}
+          ${it.img ? `<div class="reveal__photo"><img src="${esc(it.img)}" alt="${esc(it.alt)}" loading="lazy" width="674" height="365"></div>` : ""}
+          ${it.img ? "" : it.screen && D.visuals[it.name] ? `<figure class="reveal__screen">${screenSVG(it.name)}<figcaption>${esc(window.TVScreens.short(it.name))}</figcaption></figure>` : `<div class="reveal__icon">${icon(it.icon, compact ? 30 : 34)}</div>`}
           <h3 class="reveal__title">${esc(it.name)}</h3>
           <p class="reveal__sub">${esc(it.sub)}</p>
           <button class="reveal__btn" type="button" aria-expanded="false" aria-controls="${p}" aria-label="Reveal: ${esc(it.name)}">${icon("plus", 20, "i-plus")}${icon("minus", 20, "i-minus")}</button>
@@ -261,7 +262,7 @@
     }));
 
     // Image fallback: keep the layout on-brand if an image file is missing
-    $$(".scene img, .sale__art img").forEach((img) => {
+    $$(".scene img, .sale__art img, .reveal__photo img").forEach((img) => {
       const fail = () => img.parentElement.classList.add("is-fallback");
       if (img.complete && img.naturalWidth === 0) fail();
       img.addEventListener("error", fail);
