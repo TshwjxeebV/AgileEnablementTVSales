@@ -26,7 +26,7 @@ jobs:
             [ -z "${name:-}" ] && continue
             echo "Fetching $name"
             curl -fsSL --retry 3 -o "/tmp/$name.src" "$url"
-            convert "/tmp/$name.src" -strip -resize '1600x1600>' -quality 82 -interlace Plane "assets/img/$name.jpg"
+            convert "/tmp/$name.src" -strip -resize '1600x1600>' -quality 92 -interlace Plane "assets/img/$name.jpg"
             ls -la "assets/img/$name.jpg"
           done < .github/image-sources.txt
       - name: Commit images
