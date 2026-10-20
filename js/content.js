@@ -70,15 +70,15 @@ window.LESSON = {
   ],
 
   sale: [
-    { name: "Before", icon: "chat", img: "assets/img/sale-1-before-greeting.jpg", alt: "A sales associate in a navy polo greets a smiling customer as she walks into the TV department.", title: "The customer walks in", points: [
+    { name: "Before", icon: "chat", img: "assets/img/sale-1-before-greeting.jpg", alt: "A sales associate in a navy polo greets a customer in a rust-orange jacket as she walks into the TV department.", title: "The customer walks in", points: [
       "Greet within 30 seconds — eye contact, open question.",
       "Discover: Which room? How bright? What do you watch? Who's watching?",
       "Listen for DISC cues: fast & direct, social, cautious, or data-driven." ] },
-    { name: "During", icon: "play", img: "assets/img/sale-2-during-demo.jpg", alt: "The associate points to a large TV showing a sports game while the customer asks a question.", title: "The demo & recommendation", points: [
+    { name: "During", icon: "play", img: "assets/img/sale-2-during-demo.jpg", alt: "The same associate points to a large TV showing a soccer game while the customer watches closely.", title: "The demo & recommendation", points: [
       "Match two specs to what they told you — no spec-dumping.",
       "Demo it: dark movie scene on OLED, a sports clip on Mini-LED.",
       "Invite them to step to the side — show viewing angle live." ] },
-    { name: "After", icon: "bag", img: "assets/img/sale-3-after-leaving.jpg", alt: "A happy customer pushes a cart with a boxed TV toward the exit as the associate waves goodbye.", title: "The close & follow-up", points: [
+    { name: "After", icon: "bag", img: "assets/img/sale-3-after-leaving.jpg", alt: "The same customer smiles as she pushes a cart with her boxed TV toward the exit, and the associate waves goodbye.", title: "The close & follow-up", points: [
       "Summarize their needs in one sentence.",
       "Recommend one TV + one alternative; explain the trade-off.",
       "Offer setup, mounting and protection — then thank them by name." ] }

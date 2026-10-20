@@ -150,7 +150,7 @@
     </ol>
     <div class="sale">
       <figure class="sale__art">
-        <img src="${esc(s.img)}" alt="${esc(s.alt)}" loading="lazy" width="1200" height="896">
+        <img src="${esc(s.img)}" alt="${esc(s.alt)}" loading="lazy" width="768" height="445">
         <div class="sale__ring" aria-hidden="true">${icon(s.icon, 72)}</div>
       </figure>
       <div>

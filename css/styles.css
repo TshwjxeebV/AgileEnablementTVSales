@@ -314,3 +314,7 @@ button { font: inherit; }
 .journey .is-done .journey__dot { background: var(--primary); border-color: var(--primary); color: #fff; }
 .journey .is-current { color: var(--primary); }
 .journey .is-current .journey__dot { border-color: var(--primary); color: var(--primary); box-shadow: 0 0 0 4px var(--ring); }
+
+.sale { grid-template-columns: 400px 1fr; }
+.sale__art { aspect-ratio: 768 / 445; }
+@media (max-width: 760px) { .sale { grid-template-columns: 1fr; } }
