@@ -1,6 +1,0 @@
-hero-showroom https://www.figma.com/api/mcp/asset/c6e780d5-0257-4a4f-949b-fe24f29f8abf
-scenario-1-basement-theater https://www.figma.com/api/mcp/asset/57232bec-c875-4ff1-a3ac-fd5c501ca77e
-scenario-2-sunlit-bedroom https://www.figma.com/api/mcp/asset/df7dbca3-32dd-4816-9b8f-0921762d66d5
-scenario-3-home-office https://www.figma.com/api/mcp/asset/3e4ffa27-f6ed-4907-9f9f-0fa34da54d90
-scenario-4-dorm-room https://www.figma.com/api/mcp/asset/3b55d35a-c6b5-44f2-a1ff-a18654e9ef0f
-scenario-5-community-gym https://www.figma.com/api/mcp/asset/68160197-2065-4921-8364-980e9ee6b373
