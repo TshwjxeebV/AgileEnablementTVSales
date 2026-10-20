@@ -318,3 +318,6 @@ button { font: inherit; }
 .sale { grid-template-columns: 400px 1fr; }
 .sale__art { aspect-ratio: 768 / 445; }
 @media (max-width: 760px) { .sale { grid-template-columns: 1fr; } }
+
+.footer a { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
+.footer a:hover { color: var(--ring); }
