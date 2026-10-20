@@ -43,14 +43,14 @@ The site looks for these files in `assets/img/`. Until they're added, each spot 
 
 | File name | Where it appears |
 |---|---|
-| `hero-showroom.png` | Hero background |
-| `scenario-1-basement-theater.png` | Scenario 1 |
-| `scenario-2-sunlit-bedroom.png` | Scenario 2 |
-| `scenario-3-home-office.png` | Scenario 3 |
-| `scenario-4-dorm-room.png` | Scenario 4 |
-| `scenario-5-community-gym.png` | Scenario 5 |
+| `hero-showroom.jpg` | Hero background |
+| `scenario-1-basement-theater.jpg` | Scenario 1 |
+| `scenario-2-sunlit-bedroom.jpg` | Scenario 2 |
+| `scenario-3-home-office.jpg` | Scenario 3 |
+| `scenario-4-dorm-room.jpg` | Scenario 4 |
+| `scenario-5-community-gym.jpg` | Scenario 5 |
 
-Export each image from the **06 · Art Assets** page in the Figma file as PNG, rename it to match the table, and upload it to `assets/img/` on GitHub (**Add file → Upload files**).
+Export each image from the **06 · Art Assets** page in the Figma file as PNG or JPG, rename it to match the table, and upload it to `assets/img/` on GitHub (**Add file → Upload files**).
 
 ## Editing content
 

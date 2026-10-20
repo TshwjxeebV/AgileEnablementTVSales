@@ -1,0 +1,39 @@
+name: Import images from Figma
+
+# Runs when .github/image-sources.txt is pushed. Each line: <file-name> <image-url>.
+# Downloads each image, saves a web-optimized JPG to assets/img/, commits it,
+# and removes the sources file (the Figma links are short-lived).
+on:
+  push:
+    branches: [main]
+    paths: [".github/image-sources.txt"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download and optimize images
+        run: |
+          set -euo pipefail
+          command -v convert >/dev/null || { sudo apt-get update -qq && sudo apt-get install -y -qq imagemagick; }
+          mkdir -p assets/img
+          while read -r name url; do
+            [ -z "${name:-}" ] && continue
+            echo "Fetching $name"
+            curl -fsSL --retry 3 -o "/tmp/$name.src" "$url"
+            convert "/tmp/$name.src" -strip -resize '1600x1600>' -quality 82 -interlace Plane "assets/img/$name.jpg"
+            ls -la "assets/img/$name.jpg"
+          done < .github/image-sources.txt
+      - name: Commit images
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm -q .github/image-sources.txt
+          git add assets/img
+          git commit -m "Add lesson images from Figma"
+          git push
