@@ -143,9 +143,16 @@
       </div>
     </div>`;
 
-  const salePanel = (s) => `
+  const SALE_STEPS = ["Welcome", "Demo", "Close"];
+  const salePanel = (s, i) => `
+    <ol class="journey" aria-label="Sale progress: step ${i + 1} of 3">
+      ${SALE_STEPS.map((st, k) => `<li class="${k < i ? "is-done" : k === i ? "is-current" : ""}"${k === i ? ' aria-current="step"' : ""}><span class="journey__dot">${k < i ? icon("check", 14) : k + 1}</span>${st}</li>`).join("")}
+    </ol>
     <div class="sale">
-      <div class="sale__art" aria-hidden="true"><div class="sale__ring">${icon(s.icon, 72)}</div></div>
+      <figure class="sale__art">
+        <img src="${esc(s.img)}" alt="${esc(s.alt)}" loading="lazy" width="1200" height="896">
+        <div class="sale__ring" aria-hidden="true">${icon(s.icon, 72)}</div>
+      </figure>
       <div>
         <p class="eyebrow">${esc(s.name)} the sale</p>
         <h3 class="sale__title">${esc(s.title)}</h3>
@@ -271,8 +278,8 @@
     }));
 
     // Image fallback: keep the layout on-brand if an image file is missing
-    $$(".scene img").forEach((img) => {
-      const fail = () => img.closest(".scene").classList.add("is-fallback");
+    $$(".scene img, .sale__art img").forEach((img) => {
+      const fail = () => img.parentElement.classList.add("is-fallback");
       if (img.complete && img.naturalWidth === 0) fail();
       img.addEventListener("error", fail);
     });

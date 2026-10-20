@@ -49,6 +49,9 @@ The site looks for these files in `assets/img/`. Until they're added, each spot 
 | `scenario-3-home-office.jpg` | Scenario 3 |
 | `scenario-4-dorm-room.jpg` | Scenario 4 |
 | `scenario-5-community-gym.jpg` | Scenario 5 |
+| `sale-1-before-greeting.jpg` | The sale · Before |
+| `sale-2-during-demo.jpg` | The sale · During |
+| `sale-3-after-leaving.jpg` | The sale · After |
 
 Export each image from the **06 · Art Assets** page in the Figma file as PNG or JPG, rename it to match the table, and upload it to `assets/img/` on GitHub (**Add file → Upload files**).
 

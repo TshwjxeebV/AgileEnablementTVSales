@@ -299,3 +299,18 @@ button { font: inherit; }
 .meter i.on { background: var(--primary); }
 .glance__n { font-size: 12px; font-weight: 700; color: var(--muted); min-width: 24px; text-align: right; }
 @media (max-width: 480px) { .tabs__tab { padding: 14px 10px; font-size: 14px; flex: 1 1 auto; } }
+
+/* ===== Sale photos + journey strip ===== */
+.sale__art { margin: 0; position: relative; overflow: hidden; aspect-ratio: 4 / 3; }
+.sale__art img { width: 100%; height: 100%; object-fit: cover; border-radius: 16px; }
+.sale__art .sale__ring { display: none; }
+.sale__art.is-fallback img { display: none; }
+.sale__art.is-fallback .sale__ring { display: grid; position: absolute; inset: 0; margin: auto; }
+.journey { list-style: none; margin: 0 0 24px; padding: 0; display: flex; align-items: center; gap: 0; }
+.journey li { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; color: var(--muted); flex: 1; }
+.journey li:not(:last-child)::after { content: ""; flex: 1; height: 2px; background: var(--border); margin: 0 10px; }
+.journey li.is-done:not(:last-child)::after { background: var(--primary); }
+.journey__dot { flex: none; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-size: 13px; font-weight: 700; background: var(--card); border: 2px solid var(--border); color: var(--muted); }
+.journey .is-done .journey__dot { background: var(--primary); border-color: var(--primary); color: #fff; }
+.journey .is-current { color: var(--primary); }
+.journey .is-current .journey__dot { border-color: var(--primary); color: var(--primary); box-shadow: 0 0 0 4px var(--ring); }
