@@ -14,7 +14,7 @@ An interactive, scrolling onboarding lesson for new TV sales associates, built i
 6. **Quick scenario guide** — guess-then-reveal cards
 7. **The sale** — Before / During / After tabs
 8. **Practice simulation** — 5 customer scenarios with feedback and a Take Again loop
-9. **Final check** — the Jordan scenario
+9. **Exit assessment** — 10 graded questions across all four topics (pass mark 80%), one at a time, with a topic breakdown, pre-check vs. exit growth, a retake if below 80%, and a downloadable CSV of results
 10. **Lesson complete** — results summary and Restart
 
 Every question has three answer choices.
@@ -55,6 +55,12 @@ The site looks for these files in `assets/img/`. Until they're added, each spot 
 | `guide-1-movie-before-bed.jpg` … `guide-4-cheap-screen.jpg` | Quick scenario guide cards |
 
 Export each image from the **06 · Art Assets** page in the Figma file as PNG or JPG, rename it to match the table, and upload it to `assets/img/` on GitHub (**Add file → Upload files**).
+
+## Collecting results
+
+The exit assessment ends with **Download my results**, which saves a CSV with the date, attempt number, score, pass/fail, pre-check score, score by topic, and each question's answer. Associates can send that file to their manager.
+
+The website itself doesn't store anyone's results. For automatic tracking across many associates, build the exit assessment in Articulate Rise as a **Quiz lesson** (passing score 80%) and publish to your LMS as SCORM or xAPI; the LMS then records every learner's score and answers.
 
 ## Editing content
 

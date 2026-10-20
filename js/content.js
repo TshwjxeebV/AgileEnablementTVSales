@@ -13,6 +13,7 @@ window.LESSON = {
     check: '<path d="M5 13l4 4L19 7"/>',
     x: '<path d="M6 6l12 12M18 6L6 18"/>',
     chevUp: '<path d="M6 15l6-6 6 6"/>',
+    download: '<path d="M12 4v11"/><path d="M7 10l5 5 5-5"/><path d="M5 20h14"/>',
     refresh: '<path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v5h-5"/>'
   },
 
@@ -142,12 +143,41 @@ window.LESSON = {
                2: "OLED is the most premium panel on the floor — five of them in a room where screens get hit would be a costly mistake. Static class timers left on for hours also risk burn-in. Crystal LED is the practical business choice." } }
   ],
 
-  final: {
-    q: "Jordan's living room has huge windows that flood it with afternoon sun, and the TV is mostly for weekend games with friends. What's the best recommendation?",
-    options: ["QLED — vivid color at a value price", "OLED — perfect blacks and wide viewing angles", "Mini-LED — the highest peak brightness"], correct: 2,
-    right: "Mini-LED is the champion for a sunlit room. Its very high peak brightness overcomes heavy glare, and the punchy, vibrant picture makes game day pop for every guest.",
-    wrong: { 0: "QLED is bright and great value, but it can't match Mini-LED's peak brightness against direct afternoon sun. Revisit the Mini-LED tab and the quick scenario guide, then try again.",
-             1: "OLEDs are highly susceptible to heavy glare — in a sun-flooded room, reflections will wash out the game. Revisit the Mini-LED tab and the quick scenario guide, then try again." }
+  exit: {
+    passPct: 80,
+    topics: ["Specs", "Technologies", "Matching customers", "The sale"],
+    questions: [
+      { topic: "Specs", q: "Which spec describes the difference between the brightest white and the darkest black on a screen?",
+        options: ["Brightness", "Contrast", "Refresh rate"], correct: 1,
+        explain: "Contrast is the gap between the brightest white and the darkest black. More contrast means more depth — OLED leads because its pixels switch off." },
+      { topic: "Specs", q: "A customer leaves a news ticker on screen 6–8 hours a day. Which TV is fully immune to burn-in?",
+        options: ["OLED", "Mini-LED", "QLED"], correct: 2,
+        explain: "QLED's quantum-dot layer is fully immune to burn-in. Static images like tickers and scoreboards can mark an OLED panel." },
+      { topic: "Technologies", q: "How does a Mini-LED TV control its light?",
+        options: ["Thousands of tiny LEDs grouped into dimming zones", "Every pixel makes its own light", "One basic backlight lights the whole screen"], correct: 0,
+        explain: "Mini-LED packs thousands of microscopic LEDs behind the LCD, grouped into hundreds of dimming zones for precise control and very high brightness." },
+      { topic: "Technologies", q: "Why is OLED widely considered the best TV for a dark bedroom?",
+        options: ["It's the brightest panel on the floor", "It's fully immune to burn-in", "Perfect blacks and less eye fatigue, with no glaring backlight"], correct: 2,
+        explain: "OLED's self-lit pixels give perfect blacks in a dark room, and without a big backlight there's less eye fatigue before bed." },
+      { topic: "Technologies", q: "What's the main trade-off of a Crystal LED TV?",
+        options: ["Lower contrast and narrower viewing angles", "A high risk of burn-in", "The highest price on the floor"], correct: 0,
+        explain: "Crystal LED is affordable and reliable, but its basic, zone-free backlight means lower contrast, narrower viewing angles and a standard 60Hz refresh rate." },
+      { topic: "Matching customers", q: "A customer watches TV in a living room flooded with afternoon sun. What's the best recommendation?",
+        options: ["OLED", "Mini-LED", "Crystal LED"], correct: 1,
+        explain: "Mini-LED's very high peak brightness overcomes heavy glare. OLEDs are highly susceptible to glare in sun-filled rooms." },
+      { topic: "Matching customers", q: "A gym owner needs five affordable screens for class timers in a room where a screen may get hit. What's the best recommendation?",
+        options: ["OLED", "QLED", "Crystal LED"], correct: 2,
+        explain: "Crystal LED is affordable and reliable, so replacing a damaged screen won't wreck the budget — and class timers don't need cinematic color." },
+      { topic: "Matching customers", q: "A movie lover building a pitch-black basement theater hates halos around bright stars and credits. What should you recommend?",
+        options: ["OLED", "Mini-LED", "QLED"], correct: 0,
+        explain: "OLED's self-lit pixels switch off completely, so there's no blooming around bright objects — exactly what a pitch-black theater needs." },
+      { topic: "The sale", q: "A customer has just walked into the TV department. What should you do first?",
+        options: ["Point them to the most popular TV", "Greet them within 30 seconds and ask discovery questions", "Start a demo on the brightest TV"], correct: 1,
+        explain: "Greet within 30 seconds, then discover: which room, how bright it is, what they watch and who's watching. The recommendation comes after." },
+      { topic: "The sale", q: "What's the strongest way to close the sale?",
+        options: ["List every spec so they have all the facts", "Offer the most expensive TV first, then step down", "Summarize their needs, recommend one TV plus one alternative, and offer setup"], correct: 2,
+        explain: "Summarize their needs in one sentence, recommend one TV and one alternative with the trade-off, then offer setup, mounting and protection." }
+    ]
   }
 };
 

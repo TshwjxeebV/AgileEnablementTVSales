@@ -145,10 +145,10 @@
     </div>`;
 
   /* ---------- Quiz blocks ---------- */
-  const results = { precheck: {}, scenarios: {}, final: null };
+  const results = { precheck: {}, scenarios: {}, exit: null };
 
   function quizBlock(cfg) {
-    // cfg: { mode: 'precheck'|'scenario'|'final', eyebrow, badge, persona, q, options, correct, right, wrong, retake }
+    // cfg: { mode: 'precheck'|'scenario'|'exit', eyebrow, badge, persona, q, options, correct, right, wrong, retake }
     const el = document.createElement("form");
     el.className = `quiz quiz--${cfg.mode}${cfg.embedded ? " quiz--embedded" : ""}`;
     el.noValidate = true;
@@ -189,7 +189,7 @@
       $$(".opt", el).forEach((lab) => {
         const k = Number(lab.dataset.i);
         lab.classList.add("is-locked");
-        if (k === cfg.correct && (ok || cfg.mode === "precheck")) { lab.classList.add("is-correct"); $(".opt__status", lab).textContent = "✓ Correct"; }
+        if (k === cfg.correct && (ok || cfg.mode === "precheck" || cfg.mode === "exit")) { lab.classList.add("is-correct"); $(".opt__status", lab).textContent = "✓ Correct"; }
         else if (k === i && !ok) { lab.classList.add("is-wrong"); $(".opt__status", lab).textContent = "✕ Not quite"; }
         else lab.classList.add("is-dim");
       });
@@ -199,9 +199,9 @@
       const wrongText = typeof cfg.wrong === "string" ? cfg.wrong : cfg.wrong[i];
       const head = ok
         ? (cfg.mode === "precheck" ? "Correct — you already know this one" : "Correct")
-        : (cfg.mode === "precheck" ? `Not quite — the answer is ${cfg.answerName}` : "Incorrect");
+        : (cfg.mode === "precheck" ? `Not quite — the answer is ${cfg.answerName}` : cfg.mode === "exit" ? "Incorrect" : "Incorrect");
       fb.innerHTML = `
-        ${cfg.mode !== "precheck" ? `<p class="fb__k">Your decision results</p>` : ""}
+        ${cfg.mode === "scenario" ? `<p class="fb__k">Your decision results</p>` : ""}
         <p class="fb__head"><span class="fb__icon">${icon(ok ? "check" : "x", 20)}</span>${esc(head)}</p>
         <p>${esc(ok ? cfg.right : wrongText)}</p>
         ${cfg.mode === "precheck" && !ok ? `<p class="fb__next">No problem — you'll learn this in the sections ahead.</p>` : ""}
@@ -253,13 +253,7 @@
       onResult: (ok, attempts) => { if (ok && !(i in results.scenarios)) results.scenarios[i] = attempts === 1; updateSummary(); }
     })));
 
-    const fin = $('[data-quiz-group="final"]');
-    const f = D.final;
-    fin.appendChild(quizBlock({
-      mode: "final", eyebrow: "Scenario check · Jordan", q: f.q, options: f.options, correct: f.correct, right: f.right, wrong: f.wrong,
-      nextHint: "Lesson complete — scroll down ↓",
-      onResult: (ok, attempts) => { if (ok) { results.final = attempts; updateSummary(); } }
-    }));
+    buildExit();
 
     // Image fallback: keep the layout on-brand if an image file is missing
     $$(".scene img, .sale__art img, .reveal__photo img").forEach((img) => {
@@ -331,12 +325,95 @@
     show(0, false);
   }
 
+
+  /* ---------- Exit assessment: one question at a time, scored, with topic breakdown + pre/post comparison ---------- */
+  function buildExit() {
+    const root = $('[data-quiz-group="exit"]');
+    const E = D.exit, Q = E.questions, N = Q.length;
+    root.className = "stepper stepper--exit";
+    root.innerHTML = `
+      <div class="stepper__head"><p class="stepper__count" aria-live="polite"></p><span class="pill pill--graded">Graded · pass ${E.passPct}%</span></div>
+      <div class="stepper__bar" aria-hidden="true" style="grid-template-columns:repeat(${N},1fr)">${Q.map(() => "<span></span>").join("")}</div>
+      <div class="stepper__body"></div>`;
+    const body = $(".stepper__body", root), count = $(".stepper__count", root), segs = $$(".stepper__bar span", root);
+    let answers = [], picks = [], attempt = 0, startedAt = null;
+    const bringIntoView = () => { if (root.getBoundingClientRect().top < 0) root.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" }); };
+
+    function show(i, focus) {
+      if (i === 0) { attempt++; startedAt = new Date(); }
+      body.innerHTML = "";
+      segs.forEach((sg, k) => { sg.className = k < i ? "is-done" : k === i ? "is-current" : ""; });
+      if (i >= N) return showResults(focus);
+      const q = Q[i];
+      count.textContent = `Question ${i + 1} of ${N}`;
+      const el = quizBlock({
+        mode: "exit", embedded: true, eyebrow: q.topic, q: q.q, options: q.options, correct: q.correct,
+        right: q.explain, wrong: `The answer is ${LETTERS[q.correct]}. ${q.options[q.correct]}. ${q.explain}`,
+        continueLabel: i === N - 1 ? "See my results →" : "Continue →",
+        onResult: (ok) => { answers[i] = ok; picks[i] = Number($("input:checked", el).value); },
+        onContinue: () => { show(i + 1, true); bringIntoView(); }
+      });
+      body.appendChild(el);
+      if (focus) $(".quiz__q", body).focus({ preventScroll: true });
+    }
+
+    function showResults(focus) {
+      const right = answers.filter(Boolean).length, pct = Math.round((right / N) * 100), pass = pct >= E.passPct;
+      const byTopic = E.topics.map((t) => { const idx = Q.map((q, k) => q.topic === t ? k : -1).filter((k) => k >= 0); return [t, idx.filter((k) => answers[k]).length, idx.length]; });
+      const pre = Object.values(results.precheck), preRight = pre.filter(Boolean).length;
+      const prePct = pre.length ? Math.round((preRight / 4) * 100) : null;
+      results.exit = { right, n: N, pct, pass, attempt }; updateSummary();
+      count.textContent = "Results"; segs.forEach((sg) => (sg.className = "is-done"));
+      body.innerHTML = `
+        <div class="results" tabindex="-1">
+          <div class="results__ring ${pass ? "" : "is-below"}" style="--p:${pct}" aria-hidden="true"><span>${pct}%</span></div>
+          <p class="eyebrow">${pass ? "Passed" : "Not passed yet"} · ${right} of ${N} correct</p>
+          <h3 class="results__title">${pass ? "You're ready for the floor" : "Almost there — review and try again"}</h3>
+          <p class="results__cap">${pass
+            ? "You can explain all four technologies, match them to real customers and run the sale from welcome to close."
+            : `You need ${E.passPct}% to pass. Check the topics below, revisit those sections, then retake the assessment.`}</p>
+          <div class="topics" role="table" aria-label="Results by topic">
+            ${byTopic.map(([t, r, n]) => `<div class="topics__row" role="row"><span role="cell" class="topics__t">${esc(t)}</span><span role="cell" class="topics__bar" aria-hidden="true"><i style="width:${(r / n) * 100}%"></i></span><span role="cell" class="topics__n">${r} / ${n}</span></div>`).join("")}
+          </div>
+          ${prePct !== null ? `<div class="growth"><span class="growth__k">Your growth</span><span>Pre-check <strong>${prePct}%</strong></span><span aria-hidden="true">→</span><span>Exit assessment <strong>${pct}%</strong></span>${pct > prePct ? `<span class="growth__up">+${pct - prePct} pts</span>` : ""}</div>` : ""}
+          <div class="row-actions">
+            <button type="button" class="btn btn--secondary" id="exitDownload">${icon("download", 18)} Download my results</button>
+            ${pass ? "" : `<button type="button" class="btn btn--retake" id="exitRetake">${icon("refresh", 18)} Retake the assessment</button>`}
+          </div>
+          <p class="muted results__note">Your results stay on this device unless you download them. In Articulate Rise, this assessment reports scores to your LMS automatically.</p>
+        </div>`;
+      $("#exitDownload").addEventListener("click", () => download({ right, pct, pass, byTopic, prePct }));
+      const rt = $("#exitRetake"); if (rt) rt.addEventListener("click", () => { answers = []; picks = []; show(0, true); });
+      if (focus) $(".results", body).focus({ preventScroll: true });
+    }
+
+    function download({ right, pct, pass, byTopic, prePct }) {
+      const when = new Date();
+      const q = (v) => `"${String(v).replace(/"/g, '""')}"`;
+      const rows = [["Field", "Value"],
+        ["Lesson", "Display Tech Essentials"], ["Completed", when.toLocaleString()], ["Attempt", attempt],
+        ["Score", `${right}/${N}`], ["Percent", `${pct}%`], ["Result", pass ? "Pass" : "Not passed"], ["Pass mark", `${E.passPct}%`],
+        ["Pre-check", prePct === null ? "Not taken" : `${prePct}%`],
+        ...byTopic.map(([t, r, n]) => [`Topic: ${t}`, `${r}/${n}`]),
+        [], ["Question", "Topic", "Your answer", "Correct answer", "Result"],
+        ...Q.map((x, k) => [`${k + 1}. ${x.q}`, x.topic, picks[k] !== undefined ? x.options[picks[k]] : "", x.options[x.correct], answers[k] ? "Correct" : "Incorrect"])];
+      const csv = rows.map((r) => r.map(q).join(",")).join("\r\n");
+      const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
+      const url = URL.createObjectURL(blob), link = document.createElement("a");
+      link.href = url; link.download = `exit-assessment-${when.toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    root._reset = () => { answers = []; picks = []; attempt = 0; show(0, false); };
+    show(0, false);
+  }
+
   function updateSummary() {
     const pre = Object.values(results.precheck);
     $("#sumPre").textContent = pre.length ? `${pre.filter(Boolean).length} / 4 correct` : "—";
     const sc = Object.values(results.scenarios);
     $("#sumScen").textContent = sc.length ? `${sc.filter(Boolean).length} / 5` + (sc.length < 5 ? ` (${sc.length} of 5 done)` : "") : "—";
-    $("#sumFinal").textContent = results.final ? (results.final === 1 ? "✓ First try" : `✓ After ${results.final} tries`) : "—";
+    $("#sumFinal").textContent = results.exit ? `${results.exit.pct}% · ${results.exit.pass ? "Passed" : "Not passed yet"}` : "—";
   }
 
   /* ---------- Progress tracker ---------- */
@@ -390,7 +467,8 @@
   $("#restartBtn").addEventListener("click", () => {
     $$(".quiz").forEach((q) => q._reset());
     $('[data-quiz-group="precheck"]')._reset();
-    results.precheck = {}; results.scenarios = {}; results.final = null; updateSummary();
+    $('[data-quiz-group="exit"]')._reset();
+    results.precheck = {}; results.scenarios = {}; results.exit = null; updateSummary();
     $$(".reveal.is-open .reveal__btn").forEach((b) => b.click());
     $$(".acc__btn").forEach((b, i) => { if ((b.getAttribute("aria-expanded") === "true") !== (i === 0)) b.click(); });
     $$(".tabs").forEach((t) => t._reset && t._reset());

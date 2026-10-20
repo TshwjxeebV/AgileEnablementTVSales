@@ -331,3 +331,19 @@ button { font: inherit; }
 #guideGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 @media (max-width: 640px) { #guideGrid { grid-template-columns: 1fr; } }
 .reveal__photo { align-self: stretch; }
+
+/* ===== Exit assessment ===== */
+.btn--secondary { background: var(--card); color: var(--primary); border-color: var(--primary); }
+.btn--secondary:hover { background: var(--tint); }
+.pill--graded { color: var(--primary); background: var(--tint); border-color: var(--primary); }
+.results__ring.is-below { background: conic-gradient(var(--focus) calc(var(--p) * 1%), var(--border) 0); }
+.topics { width: 100%; max-width: 520px; display: flex; flex-direction: column; gap: 10px; margin: 8px 0; text-align: left; }
+.topics__row { display: grid; grid-template-columns: 160px 1fr 48px; gap: 12px; align-items: center; font-size: 15px; }
+.topics__t { font-weight: 600; }
+.topics__bar { height: 8px; border-radius: 4px; background: var(--border); overflow: hidden; }
+.topics__bar i { display: block; height: 100%; background: var(--primary); border-radius: 4px; }
+.topics__n { font-weight: 700; color: var(--muted); text-align: right; font-size: 14px; }
+@media (max-width: 480px) { .topics__row { grid-template-columns: 1fr 48px; } .topics__bar { grid-column: 1 / -1; grid-row: 2; } }
+.growth { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px 12px; background: var(--page); border: 1px solid var(--border); border-radius: 12px; padding: 12px 18px; font-size: 15px; }
+.growth__k { font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+.growth__up { font-weight: 700; color: var(--success); background: var(--success-tint); border-radius: 999px; padding: 2px 10px; font-size: 13px; }
