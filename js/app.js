@@ -9,6 +9,41 @@
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   let uid = 0; const nid = (p) => `${p}-${++uid}`;
 
+
+  /* ---------- Visuals (dual coding: same scene on every screen) ---------- */
+  function screenSVG(name, size) {
+    const v = D.visuals[name]; if (!v) return "";
+    const c = v.screen, g = nid("halo");
+    let zones = "";
+    if (c.zones) { for (let x = 30; x < 194; x += 23.5) zones += `<line x1="${x}" y1="6" x2="${x}" y2="110"/>`; for (let y = 32; y < 110; y += 26) zones += `<line x1="6" y1="${y}" x2="194" y2="${y}"/>`; }
+    return `<svg class="screen ${size || ""}" viewBox="0 0 200 124" role="img" aria-label="${esc(v.alt)}">
+      <defs><radialGradient id="${g}"><stop offset="0" stop-color="#fff" stop-opacity="${c.haloOp}"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs>
+      <rect x="0" y="0" width="200" height="116" rx="8" fill="#0B1F3A"/>
+      <rect x="6" y="6" width="188" height="104" rx="3" fill="${c.bg}"/>
+      ${zones ? `<g stroke="#fff" stroke-opacity=".07" stroke-width="1">${zones}</g>` : ""}
+      ${c.halo ? `<circle cx="128" cy="46" r="${c.halo}" fill="url(#${g})"/><ellipse cx="74" cy="90" rx="${c.halo + 26}" ry="${Math.round(c.halo / 2) + 4}" fill="url(#${g})"/>` : ""}
+      <circle cx="128" cy="46" r="5" fill="#fff" fill-opacity="${c.star}"/>
+      <path d="M128 36v20M118 46h20" stroke="#fff" stroke-opacity="${c.star * .7}" stroke-width="1.2"/>
+      <circle cx="60" cy="30" r="1.2" fill="#fff" fill-opacity="${c.star * .8}"/><circle cx="160" cy="80" r="1" fill="#fff" fill-opacity="${c.star * .8}"/><circle cx="40" cy="64" r="1" fill="#fff" fill-opacity="${c.star * .7}"/>
+      <rect x="44" y="88" width="60" height="4" rx="2" fill="#fff" fill-opacity="${c.star * .9}"/>
+      <rect x="94" y="116" width="12" height="5" fill="#0B1F3A"/><rect x="78" y="120" width="44" height="4" rx="2" fill="#0B1F3A"/>
+    </svg>`;
+  }
+  function layersHTML(name) {
+    const v = D.visuals[name]; if (!v) return "";
+    return `<div class="layers">
+      <p class="layers__eye">${icon("chevUp", 14)} Toward your eyes</p>
+      <ol class="layers__list" aria-label="How ${esc(name)} makes light, front to back">
+        ${v.layers.map(([n, d, src]) => `<li class="layer${src ? " layer--src" : ""}"><span class="layer__n">${src ? icon("sun", 16) : ""}${esc(n)}</span>${d ? `<span class="layer__d">${esc(d)}</span>` : ""}${src ? `<span class="sr-only"> (light source)</span>` : ""}</li>`).join("")}
+      </ol>
+    </div>`;
+  }
+  function glanceHTML(name) {
+    const v = D.visuals[name]; if (!v) return "";
+    return `<div class="glance"><p class="glance__k">At a glance <span>vs. the other three</span></p>
+      <dl>${v.glance.map(([k, n]) => `<div class="glance__row"><dt>${esc(k)}</dt><dd><span class="meter" aria-hidden="true">${[1,2,3,4,5].map(i => `<i class="${i <= n ? "on" : ""}"></i>`).join("")}</span><span class="glance__n">${n}/5</span><span class="sr-only">${n} out of 5</span></dd></div>`).join("")}</dl></div>`;
+  }
+
   /* ---------- Accordion ---------- */
   function buildAccordion() {
     const root = $("#accordion");
@@ -38,7 +73,7 @@
       const p = nid("rev");
       return `<div class="reveal ${compact ? "reveal--compact" : ""}">
         <div class="reveal__face">
-          <div class="reveal__icon">${icon(it.icon, compact ? 30 : 34)}</div>
+          ${it.screen && D.visuals[it.name] ? `<figure class="reveal__screen">${screenSVG(it.name)}<figcaption>${esc(D.visuals[it.name].caption)}</figcaption></figure>` : `<div class="reveal__icon">${icon(it.icon, compact ? 30 : 34)}</div>`}
           <h3 class="reveal__title">${esc(it.name)}</h3>
           <p class="reveal__sub">${esc(it.sub)}</p>
           <button class="reveal__btn" type="button" aria-expanded="false" aria-controls="${p}" aria-label="Reveal: ${esc(it.name)}">${icon("plus", 20, "i-plus")}${icon("minus", 20, "i-minus")}</button>
@@ -88,13 +123,14 @@
   const techPanel = (t) => `
     <div class="profile">
       <div class="profile__id">
-        <div class="profile__icon">${icon(t.icon, 44)}</div>
+        <figure class="profile__screen">${screenSVG(t.name, "screen--lg")}<figcaption>${esc(D.visuals[t.name].caption)}</figcaption></figure>
         <h3 class="profile__name">${esc(t.name)}</h3>
         <p class="muted">${esc(t.tag)}</p>
         <div class="best"><span class="best__k">Best for</span><span class="best__v">${esc(t.best)}</span></div>
+        ${glanceHTML(t.name)}
       </div>
       <dl class="profile__rows">
-        <div><dt>How it works</dt><dd>${esc(t.how)}</dd></div>
+        <div><dt>How it works</dt><dd>${esc(t.how)}${layersHTML(t.name)}</dd></div>
         <div><dt>Key features</dt><dd>${esc(t.features)}</dd></div>
         <div><dt>Viewing experience</dt><dd>${esc(t.experience)}</dd></div>
       </dl>
@@ -352,7 +388,7 @@
 
   /* ---------- Init ---------- */
   buildAccordion();
-  buildReveal("#previewGrid", D.preview, true);
+  buildReveal("#previewGrid", D.preview.map((p) => ({ ...p, screen: true })), true);
   buildTabs("#techTabs", D.techs, techPanel, "Display technologies");
   buildReveal("#guideGrid", D.guide, false);
   buildTabs("#saleTabs", D.sale.map((s, i) => ({ ...s, tabLabel: `${i + 1}. ${s.name}` })), salePanel, "Moments of the sale");

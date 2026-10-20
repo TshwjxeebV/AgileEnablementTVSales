@@ -12,6 +12,7 @@ window.LESSON = {
     minus: '<path d="M5 12h14"/>',
     check: '<path d="M5 13l4 4L19 7"/>',
     x: '<path d="M6 6l12 12M18 6L6 18"/>',
+    chevUp: '<path d="M6 15l6-6 6 6"/>',
     refresh: '<path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v5h-5"/>'
   },
 
@@ -147,5 +148,37 @@ window.LESSON = {
     right: "Mini-LED is the champion for a sunlit room. Its very high peak brightness overcomes heavy glare, and the punchy, vibrant picture makes game day pop for every guest.",
     wrong: { 0: "QLED is bright and great value, but it can't match Mini-LED's peak brightness against direct afternoon sun. Revisit the Mini-LED tab and the quick scenario guide, then try again.",
              1: "OLEDs are highly susceptible to heavy glare — in a sun-flooded room, reflections will wash out the game. Revisit the Mini-LED tab and the quick scenario guide, then try again." }
+  }
+};
+
+/* Visuals: same scene on every screen (a bright star on a night sky), how each TV makes light, and relative ratings. */
+window.LESSON.visuals = {
+  "OLED": {
+    screen: { bg: "#000000", halo: 0, haloOp: 0, zones: false, star: 1 },
+    alt: "OLED screen: a bright star on a perfectly black sky with no glow around it.",
+    caption: "Pure black · no glow",
+    layers: [["Front glass", ""], ["Self-lit pixels", "Each pixel makes its own light and can switch fully off", true]],
+    glance: [["Contrast", 5], ["Brightness", 3], ["Viewing angle", 5], ["Budget-friendly", 1]]
+  },
+  "Mini-LED": {
+    screen: { bg: "#05060A", halo: 18, haloOp: .22, zones: true, star: 1 },
+    alt: "Mini-LED screen: a very bright star on a deep black sky with a faint halo and visible dimming zones.",
+    caption: "Deep black · faint halo",
+    layers: [["LCD panel", "Shapes the picture"], ["Thousands of tiny LEDs", "Grouped in hundreds of dimming zones", true]],
+    glance: [["Contrast", 4], ["Brightness", 5], ["Viewing angle", 3], ["Budget-friendly", 2]]
+  },
+  "QLED": {
+    screen: { bg: "#161A22", halo: 24, haloOp: .28, zones: false, star: 1 },
+    alt: "QLED screen: a bright star on a dark gray sky with a soft glow.",
+    caption: "Dark gray · soft glow",
+    layers: [["LCD panel", "Shapes the picture"], ["Quantum-dot layer", "Boosts color"], ["LED backlight", "Lights the whole screen", true]],
+    glance: [["Contrast", 3], ["Brightness", 4], ["Viewing angle", 3], ["Budget-friendly", 4]]
+  },
+  "Crystal LED": {
+    screen: { bg: "#272B35", halo: 34, haloOp: .34, zones: false, star: .85 },
+    alt: "Crystal LED screen: a dimmer star on a washed-out gray sky with a wide glow.",
+    caption: "Gray · wide glow",
+    layers: [["LCD panel", "Shapes the picture"], ["Basic LED backlight", "One light for the whole screen, no zones", true]],
+    glance: [["Contrast", 2], ["Brightness", 2], ["Viewing angle", 2], ["Budget-friendly", 5]]
   }
 };
