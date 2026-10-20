@@ -330,3 +330,4 @@ button { font: inherit; }
 .reveal--photo.is-open .reveal__face { border-width: 2px; }
 #guideGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 @media (max-width: 640px) { #guideGrid { grid-template-columns: 1fr; } }
+.reveal__photo { align-self: stretch; }
